@@ -10,6 +10,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { UserContext } from '../../contexts/UserContext';
+
+
 const Login = () => {
   const navigate = useNavigate();
   const { updateUser } = useContext(UserContext);
@@ -26,15 +28,10 @@ const Login = () => {
     setError('xuye nma bovotti');
     console.log('try usti');
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
       console.log('check try');
       const { userType, userData } = response.data;
       const token = Cookies.get('token');
-      // Set token and userType as cookies (ensure these are set properly)
-      // const expiresAt = new Date();
-      // expiresAt.setTime(expiresAt.getTime() + (1 * 60 * 60 * 1000)); //expires at 1h
-      // Cookies.set('token', token, { expires: expiresAt, secure: true, sameSite: 'Strict' });
-      // Cookies.set('userType', userType, { expires: expiresAt, secure: true, sameSite: 'Strict' });
 
       sessionStorage.setItem("token", token)
       sessionStorage.setItem("role", userType)
