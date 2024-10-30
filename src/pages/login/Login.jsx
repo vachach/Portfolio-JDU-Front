@@ -25,10 +25,9 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('xuye nma bovotti');
-    console.log('try usti');
+    setError('ERROR');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+      const response = await axios.post(`/api/auth/login`, { email, password }); // ${import.meta.env.VITE_API_URL}
       console.log('check try');
       const { userType, userData } = response.data;
       const token = Cookies.get('token');
