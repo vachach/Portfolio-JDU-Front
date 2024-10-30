@@ -22,12 +22,13 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loginMode, setLoginMode] = useState(true); // состояние для переключения режимов
 
-
+  console.log(import.meta.env.VITE_API_URL);
+  
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('ERROR');
     try {
-      const response = await axios.post(`/api/auth/login`, { email, password }); // ${import.meta.env.VITE_API_URL}
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }); // ${import.meta.env.VITE_API_URL}/auth/login
       console.log('check try');
       const { userType, userData } = response.data;
       const token = Cookies.get('token');
