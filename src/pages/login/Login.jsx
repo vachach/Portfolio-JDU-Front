@@ -28,7 +28,7 @@ const Login = () => {
     setError('xuye nma bovotti');
     console.log('try usti');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       console.log('check try');
       const { userType, userData } = response.data;
       const token = Cookies.get('token');
