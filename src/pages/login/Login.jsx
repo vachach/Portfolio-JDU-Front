@@ -23,11 +23,11 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
-
+    setError('xuye nma bovotti');
+    console.log('try usti');
     try {
       const response = await axios.post('/api/auth/login', { email, password });
-
+      console.log('check try');
       const { userType, userData } = response.data;
       const token = Cookies.get('token');
       // Set token and userType as cookies (ensure these are set properly)
@@ -45,7 +45,7 @@ const Login = () => {
       setError(err.response?.data?.error || 'Login failed');
     }
   };
-
+  
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setError('');
