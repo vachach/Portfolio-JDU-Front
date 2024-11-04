@@ -22,27 +22,33 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loginMode, setLoginMode] = useState(true); // состояние для переключения режимов
 
-  console.log(import.meta.env.VITE_API_URL);
-  
+  // console.log(import.meta.env.VITE_API_URL);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('ERROR');
+    setError('');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }); // ${import.meta.env.VITE_API_URL}/auth/login
-      console.log('check try');
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       const { userType, userData } = response.data;
-      const token = Cookies.get('token');
-
-      sessionStorage.setItem("token", token)
-      sessionStorage.setItem("role", userType)
-      sessionStorage.setItem("loginUser", JSON.stringify(userData))
-      updateUser();
+  
+      // Store token in cookies
+      const resToken = userData.token;
+      Cookies.set('token', resToken); // Set the token in cookies
+      console.log(resToken);
+      
+      // Store data in sessionStorage
+      sessionStorage.setItem("token", resToken);
+      sessionStorage.setItem("role", userType);
+      sessionStorage.setItem("loginUser", JSON.stringify(userData));
+  
+      // Navigate to home
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     }
   };
   
+
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setError('');
