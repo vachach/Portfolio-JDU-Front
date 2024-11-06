@@ -20,6 +20,7 @@ import FAQ from './pages/faq/Faq';
 import NotFound from './pages/NotFound/NotFound';
 import Unauthorized from './pages/Unauthorized/Unauthorized';
 import LogOut from './components/LogOut';
+import CreditDetails from "./pages/CreditDetails/CreditDetails.jsx";
 
 const AppRoutes = () => {
   const { role, userId, updateUser } = useContext(UserContext);
@@ -69,6 +70,7 @@ const AppRoutes = () => {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<LogOut updateUser={updateUser} />} />
+        <Route path="/credit-details" element={<CreditDetails />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

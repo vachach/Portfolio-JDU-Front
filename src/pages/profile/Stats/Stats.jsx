@@ -13,7 +13,7 @@ const Stats = () => {
   const location = useLocation();
   const { userId } = location.state || {};
 
-  if (userId != 0 && userId) {
+  if (userId !== 0 && userId) {
     id = userId;
   } else {
     id = studentId;
@@ -97,7 +97,7 @@ const Stats = () => {
     // Create a temporary array to hold the processed data
     let temp = [];
     // Process each item in the data array
-    if (key == "main") {
+    if (key === "main") {
       data?.list?.forEach((x) => {
         let obj = {
           name: x.level,
