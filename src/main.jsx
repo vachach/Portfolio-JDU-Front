@@ -12,7 +12,7 @@ import "./assets/fonts/fonts.css";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* Add CssBaseline for consistent styling */}
+      <CssBaseline />
       <AlertProvider>
         <UserProvider>
           <AppRoutes />

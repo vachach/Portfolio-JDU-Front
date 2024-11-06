@@ -1,22 +1,21 @@
-// src/components/ProtectedRoute.js
 import React from "react";
 import Cookies from "js-cookie";
-import { Navigate } from "react-router-dom";
+import {Navigate, useLocation} from "react-router-dom";
+import {useUser} from "../contexts/UserContext.jsx";
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
-  const token = Cookies.get("token");
-  const userRole = Cookies.get("userType"); // Assuming userType is set during login
+const ProtectedRoute = ({children, allowedRoles}) => {
+  const {isAuthenticated, role} = useUser();
+  const location = useLocation();
 
-  if (!token) {
-    // Redirect to login if no token
-    return <Navigate to="/login" />;
-  } else if (allowedRoles && !allowedRoles.includes(userRole)) {
-    // Redirect to unauthorized page if user role is not allowed
-    return <Navigate to="/unauthorized" />;
-  } else {
-    // Render children if authenticated and role is allowed
-    return children;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{from: location}} replace/>;
   }
+
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    return <Navigate to="/unauthorized" replace/>;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;
