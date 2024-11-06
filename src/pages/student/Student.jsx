@@ -5,14 +5,15 @@ import Table from "../../components/table/Table";
 import Filter from "../../components/filter/Filter";
 
 import axios from "../../utils/axiosUtils";
+import {useUser} from "../../contexts/UserContext.jsx";
 
 const Student = ({ OnlyBookmarked = false }) => {
   const [filterState, setFilterState] = useState({});
+  const {activeUser, updateUser, userId, role} = useUser();
   const [updatedBookmark, setUpdatedBookmark] = useState({
     studentId: null,
     timestamp: new Date().getTime(),
   });
-  const recruiterId = JSON.parse(sessionStorage.getItem("loginUser")).id;
   // Ensure filterProps have unique keys matching your database columns
   const filterProps = [
     {
@@ -94,7 +95,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     try {
       const response = await axios.post("/api/bookmarks/toggle", {
         studentId,
-        recruiterId,
+        userId,
       });
       setUpdatedBookmark({
         studentId: response.data.studentId,
@@ -153,7 +154,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     headers: headers,
     dataLink: "/api/students",
     filter: filterState,
-    recruiterId: recruiterId,
+    recruiterId: userId,
     OnlyBookmarked: OnlyBookmarked,
   };
 
