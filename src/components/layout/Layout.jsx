@@ -1,18 +1,18 @@
- import React, { useState, useEffect, useContext } from "react";
-import { Outlet, NavLink } from "react-router-dom";
-import { UserContext } from "../../contexts/UserContext";
+import React, {useEffect, useState} from "react";
+import {NavLink, Outlet} from "react-router-dom";
+import {useUser} from "../../contexts/UserContext";
 import UserAvatar from "../table/avatar/UserAvatar";
 
 // icons
-import { ReactComponent as NavButtonIcon } from "../../assets/icons/navButton.svg";
-import { ReactComponent as HomeIcon } from "../../assets/icons/home.svg";
-import { ReactComponent as StudentIcon } from "../../assets/icons/student.svg";
-import { ReactComponent as UserPlusIcon } from "../../assets/icons/userPlus.svg";
-import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
-import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
-import { ReactComponent as LogOutIcon } from "../../assets/icons/logOut.svg";
-import { ReactComponent as BookmarkIcon } from "../../assets/icons/bookmark.svg";
-import { ReactComponent as ProfileIcon } from "../../assets/icons/profile.svg";
+import {ReactComponent as NavButtonIcon} from "../../assets/icons/navButton.svg";
+import {ReactComponent as HomeIcon} from "../../assets/icons/home.svg";
+import {ReactComponent as StudentIcon} from "../../assets/icons/student.svg";
+import {ReactComponent as UserPlusIcon} from "../../assets/icons/userPlus.svg";
+import {ReactComponent as SettingsIcon} from "../../assets/icons/settings.svg";
+import {ReactComponent as HelpIcon} from "../../assets/icons/help.svg";
+import {ReactComponent as LogOutIcon} from "../../assets/icons/logOut.svg";
+import {ReactComponent as BookmarkIcon} from "../../assets/icons/bookmark.svg";
+import {ReactComponent as ProfileIcon} from "../../assets/icons/profile.svg";
 
 import logo from "/src/assets/logo.png";
 import style from "./Layout.module.css";
@@ -27,29 +27,27 @@ const navItems = [
   {
     section: "GENERAL",
     items: [
-        { to: "/", icon: <HomeIcon />, label: "Home", roles: ["Admin", "Staff", "Recruiter"] },
-        { to: "/companyprofile", icon: <ProfileIcon />, label: "プロファイル", roles: ["Recruiter"] },
-        { to: "/student", icon: <StudentIcon />, label: "学生検索", roles: ["Admin", "Staff", "Recruiter"] },
-        { to: "/staff", icon: <UserPlusIcon />, label: "職員", roles: ["Admin"] },
-        { to: "/profile", icon: <ProfileIcon />, label: "プロファイル", roles: ["Student"] },
-        { to: "/recruiter", icon: <UserPlusIcon />, label: "リクレーター", roles: ["Admin", "Staff", "Student"] },
-        { to: "/bookmarked", icon: <BookmarkIcon />, label: "気になる", roles: ["Recruiter"] },
+      {to: "/", icon: <HomeIcon/>, label: "Home", roles: ["Admin", "Staff", "Recruiter"]},
+      {to: "/companyprofile", icon: <ProfileIcon/>, label: "プロファイル", roles: ["Recruiter"]},
+      {to: "/student", icon: <StudentIcon/>, label: "学生検索", roles: ["Admin", "Staff", "Recruiter"]},
+      {to: "/staff", icon: <UserPlusIcon/>, label: "職員", roles: ["Admin"]},
+      {to: "/profile", icon: <ProfileIcon/>, label: "プロファイル", roles: ["Student"]},
+      {to: "/recruiter", icon: <UserPlusIcon/>, label: "リクレーター", roles: ["Admin", "Staff", "Student"]},
+      {to: "/bookmarked", icon: <BookmarkIcon/>, label: "気になる", roles: ["Recruiter"]},
     ],
-  },  {
+  }, {
     section: "GENERAL",
     items: [
-        { to: "/settings", icon: <SettingsIcon />, label: "設定", roles: ["Admin", "Staff", "Recruiter", "Student"] },
-        { to: "/help", icon: <HelpIcon />, label: "ヘルプ", roles: ["Admin", "Staff", "Recruiter", "Student"] },
+      {to: "/settings", icon: <SettingsIcon/>, label: "設定", roles: ["Admin", "Staff", "Recruiter", "Student"]},
+      {to: "/help", icon: <HelpIcon/>, label: "ヘルプ", roles: ["Admin", "Staff", "Recruiter", "Student"]},
     ],
   },
 ];
 
 const Layout = () => {
-  const { activeUser, updateUser } = useContext(UserContext);
+  const {activeUser, updateUser, userId, role} = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [smallScreen, setSmallScreen] = useState(false);
-  const [userData, setUserData] = useState({});
-  const [role, setRole] = useState(sessionStorage.getItem("role")); // Get role from sessionStorage
 
   const [japanTime, setJapanTime] = useState("");
   const [uzbekistanTime, setUzbekistanTime] = useState("");
@@ -61,7 +59,7 @@ const Layout = () => {
 
   const updateTime = () => {
     const now = new Date();
-    const options = { hour: "2-digit", minute: "2-digit" };
+    const options = {hour: "2-digit", minute: "2-digit"};
 
     const japanTimeString = now.toLocaleTimeString("ja-JP", {
       ...options,
@@ -78,8 +76,6 @@ const Layout = () => {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-    setUserData(JSON.parse(sessionStorage.getItem("loginUser")));
-    // Initial check
     handleResize();
     updateTime();
     const intervalId = setInterval(updateTime, 60000);
@@ -98,18 +94,18 @@ const Layout = () => {
         <div className={style.left}>
           <div className={style.logo}>
             <div>
-              <img src={logo} alt="Logo" />
+              <img src={logo} alt="Logo"/>
             </div>
             <div>JDU Portfolio</div>
           </div>
         </div>
         <div className={style.right}>
           <div className={style.navButton} onClick={handleNavButtonClick}>
-            <NavButtonIcon />
+            <NavButtonIcon/>
           </div>
           <div className={style.topBarBox}>
             <div className={style.timeBox}>
-              <div style={{ textAlign: "right" }}>
+              <div style={{textAlign: "right"}}>
                 <div className={style.timeText}>Japan</div>
                 <div className={style.time}>{japanTime}</div>
               </div>
@@ -119,7 +115,7 @@ const Layout = () => {
                 viewBox="0 0 13 32"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                style={{ margin: "0 4px" }}
+                style={{margin: "0 4px"}}
               >
                 <path
                   d="M5.22727 14.3864V15.6364H0.136364V14.3864H5.22727ZM12.5866 14.3864V15.6364H7.49574V14.3864H12.5866Z"
@@ -162,7 +158,7 @@ const Layout = () => {
                     <li key={index}>
                       <NavLink
                         to={item.to}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                           isActive ? style.active : ""
                         }
                       >
@@ -178,9 +174,9 @@ const Layout = () => {
               <li>
                 <NavLink
                   to="/logout"
-                  className={({ isActive }) => (isActive ? style.active : "")}
+                  className={({isActive}) => (isActive ? style.active : "")}
                 >
-                  <LogOutIcon />
+                  <LogOutIcon/>
                   <div>ログアウト</div>
                 </NavLink>
               </li>
@@ -197,7 +193,7 @@ const Layout = () => {
           />
         )}
         <main className={style.right} id={style.main}>
-          <Outlet />
+          <Outlet/>
         </main>
       </div>
     </div>

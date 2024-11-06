@@ -23,8 +23,6 @@ import LogOut from './components/LogOut';
 
 const AppRoutes = () => {
   const { role, userId, updateUser } = useContext(UserContext);
-  console.log(role);
-  
 
   return (
     <Router>

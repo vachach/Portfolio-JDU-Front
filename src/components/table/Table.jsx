@@ -18,10 +18,12 @@ import {
   LinearProgress,
 } from "@mui/material";
 
-import { stableSort, getComparator } from "./TableUtils"; // Import sorting utilities
+import { stableSort, getComparator } from "./TableUtils";
+import {useUser} from "../../contexts/UserContext.jsx"; // Import sorting utilities
 
 const EnhancedTable = ({ tableProps, updatedBookmark }) => {
-  const role = sessionStorage.getItem("role");
+  const {isAuthenticated, role, userId} = useUser();
+
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("");

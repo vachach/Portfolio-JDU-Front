@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
-import { UserContext } from "../../contexts/UserContext";
+import {UserContext, useUser} from "../../contexts/UserContext";
 import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
 import { useAlert } from "../../contexts/AlertContext";
@@ -58,23 +58,22 @@ const Setting = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userRole = sessionStorage.getItem("role");
-      await setRole(userRole);
+      const {isAuthenticated, role, userId} = useUser();
+      await setRole(role);
       try {
-        const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
         let response;
-        switch (userRole) {
+        switch (role) {
           case "Admin":
-            response = await axios.get(`/api/admin/${id}`);
+            response = await axios.get(`/api/admin/${userId}`);
             break;
           case "Student":
-            response = await axios.get(`/api/students/${id}`);
+            response = await axios.get(`/api/students/${userId}`);
             break;
           case "Staff":
-            response = await axios.get(`/api/staff/${id}`);
+            response = await axios.get(`/api/staff/${userId}`);
             break;
           case "Recruiter":
-            response = await axios.get(`/api/recruiters/${id}`);
+            response = await axios.get(`/api/recruiters/${userId}`);
             break;
           default:
             throw new Error("Unknown role");
