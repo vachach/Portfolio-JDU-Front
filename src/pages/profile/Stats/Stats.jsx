@@ -47,26 +47,42 @@ const Stats = () => {
         }
 
         const fetchCertificates = async () => {
-          setCertificateData("main", "JLPT", JSON.parse(studentData.jlpt));
-          setCertificateData(
-            "main",
-            "JDU_JLPT",
-            JSON.parse(studentData.jdu_japanese_certification)
-          );
-          setCertificateData("main", "IELTS", JSON.parse(studentData.ielts));
-          setCertificateData(
-            "other",
-            "日本語弁論大会学内",
-            JSON.parse(studentData.japanese_speech_contest)
-          );
-          setCertificateData(
-            "other",
-            "ITコンテスト学内",
-            JSON.parse(studentData.it_contest)
-          );
-
-          setStudent(studentData);
+          // Helper function to safely parse JSON
+          const safeParseJSON = (data) => {
+            try {
+              return JSON.parse(data);
+            } catch (error) {
+              console.warn("Invalid JSON data:", data);
+              return {}; 
+            }
+          };
+        
+          try {
+            setCertificateData("main", "JLPT", safeParseJSON(studentData.jlpt));
+            setCertificateData(
+              "main",
+              "JDU_JLPT",
+              safeParseJSON(studentData.jdu_japanese_certification)
+            );
+            setCertificateData("main", "IELTS", safeParseJSON(studentData.ielts));
+            setCertificateData(
+              "other",
+              "日本語弁論大会学内",
+              safeParseJSON(studentData.japanese_speech_contest)
+            );
+            setCertificateData(
+              "other",
+              "ITコンテスト学内",
+              safeParseJSON(studentData.it_contest)
+            );
+        
+            setStudent(studentData);
+          } catch (error) {
+            console.error("Error fetching certificates:", error);
+          }
         };
+        
+
 
         await fetchCertificates();
       } catch (error) {
@@ -194,7 +210,7 @@ const Stats = () => {
             credits={
               JSON.stringify(kintoneData) !== "{}"
                 ? Number(kintoneData.businessSkillsCredits?.value) +
-                  Number(kintoneData.japaneseEmploymentCredits?.value)
+                Number(kintoneData.japaneseEmploymentCredits?.value)
                 : 0
             }
             semester={
