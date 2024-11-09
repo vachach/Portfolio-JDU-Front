@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axios from '../../utils/axiosUtils';
 import Cookies from 'js-cookie';
 import styles from './Login.module.css';
@@ -9,40 +9,32 @@ import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import { UserContext } from '../../contexts/UserContext';
+import {useUser} from "../../contexts/UserContext.jsx";
 
 
 const Login = () => {
   const navigate = useNavigate();
-  const { updateUser } = useContext(UserContext);
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [loginMode, setLoginMode] = useState(true); // состояние для переключения режимов
+  const [loginMode, setLoginMode] = useState(true);
+  const { login } = useUser();
 
-  console.log(import.meta.env.VITE_API_URL);
-  
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('ERROR');
+    setError('');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }); // ${import.meta.env.VITE_API_URL}/auth/login
-      console.log('check try');
-      const { userType, userData } = response.data;
-      const token = Cookies.get('token');
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {email, password});
 
-      sessionStorage.setItem("token", token)
-      sessionStorage.setItem("role", userType)
-      sessionStorage.setItem("loginUser", JSON.stringify(userData))
-      updateUser();
+      await login(response.data);
+
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     }
   };
-  
+
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setError('');
@@ -52,11 +44,11 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({email}),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send password reset email');
+        console.error('Failed to send password reset email');
       }
     } catch (err) {
       setError(err.message);
@@ -71,19 +63,19 @@ const Login = () => {
     <div className={styles['login-container']}>
       <div className={styles['login-form']}>
         <div className={styles['header-container']}>
-          <img src={logo} alt="Logo" className={styles['logo']} />
+          <img src={logo} alt="Logo" className={styles['logo']}/>
           <div className={styles['text-container']}>
             <h2>{loginMode ? 'おかえりなさい' : 'パスワードをお忘れですか'}</h2>
             <p>{loginMode ? '情報をご入力ください!' : 'パスワード変更用リンクを電子メールに送信します'}</p>
           </div>
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{color: 'red'}}>{error}</p>}
         {loginMode ? (
           <form onSubmit={handleLogin}>
             <div className={styles['input-group']}>
               <label>ログイン</label>
               <div className={styles['input-icon']}>
-                <BadgeOutlinedIcon />
+                <BadgeOutlinedIcon/>
                 <input
                   type="email"
                   placeholder="ログインをご入力ください"
@@ -95,7 +87,7 @@ const Login = () => {
             </div>
             <div className={styles['input-group']}>
               <div className={styles['input-icon']}>
-                <LockOutlinedIcon />
+                <LockOutlinedIcon/>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="パスポートをご入力ください"
@@ -105,14 +97,14 @@ const Login = () => {
                 />
                 {password && (
                   <span onClick={togglePasswordVisibility} className={styles['visibility-icon']}>
-                    {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
+                    {showPassword ? <VisibilityOffOutlinedIcon/> : <VisibilityOutlinedIcon/>}
                   </span>
                 )}
               </div>
             </div>
             <div className={styles['remember-me-container']}>
               <div className={styles['remember-me']}>
-                <input type="checkbox" id="remember" name="remember" />
+                <input type="checkbox" id="remember" name="remember"/>
                 <label htmlFor="remember">保存</label>
               </div>
               <div className={styles['forgot-password']}>
@@ -128,12 +120,12 @@ const Login = () => {
             <button type="submit" className={`${styles['button-custom']} ${styles['submit-button']}`}>ログイン</button>
           </form>
         ) : (
-          // Forgot Password mode
+
           <form onSubmit={handleForgotPassword}>
             <div className={styles['input-group']}>
               <label>メールアドレス</label>
               <div className={styles['input-icon']}>
-                <BadgeOutlinedIcon />
+                <BadgeOutlinedIcon/>
                 <input
                   type="email"
                   placeholder="メールをご入力ください"
@@ -144,12 +136,14 @@ const Login = () => {
               </div>
             </div>
             <button type="submit" className={`${styles['button-custom']} ${styles['submit-button']}`}>送信</button>
-            <button type="button" className={`${styles['button-custom']} ${styles['submit-button']}`} onClick={() => setLoginMode(true)}>戻る</button>
+            <button type="button" className={`${styles['button-custom']} ${styles['submit-button']}`}
+                    onClick={() => setLoginMode(true)}>戻る
+            </button>
           </form>
         )}
       </div>
       <div className={styles['login-image']}>
-        <img src={universityImage} alt="University" />
+        <img src={universityImage} alt="University"/>
       </div>
     </div>
   );

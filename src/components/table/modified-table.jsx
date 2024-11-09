@@ -19,42 +19,51 @@ import {
 } from "@mui/material";
 
 import { stableSort, getComparator } from "./TableUtils";
-import {useUser} from "../../contexts/UserContext.jsx"; // Import sorting utilities
+import { useUser } from "../../contexts/UserContext.jsx";
 
 const EnhancedTable = ({ tableProps, updatedBookmark }) => {
-  const {isAuthenticated, role, userId} = useUser();
-
-
+  const { isAuthenticated, role, userId } = useUser();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(false); // Initialize loading state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      setLoading(true); // Start loading indicator
+      setLoading(true);
       try {
-        const response = await axios.get(tableProps.dataLink, {
-          params: {
-            filter: tableProps.filter,
-            recruiterId: tableProps.recruiterId,
-            onlyBookmarked: tableProps.OnlyBookmarked, // Assuming you add recruiterId to the filter
-          },
-        });
-        setRows(response.data);
+        const response = await axios.get(
+          "https://9hrfxuh377.execute-api.ap-northeast-1.amazonaws.com/default/api/kintone"
+        );
+        
+        // Transform the API response to match the expected format
+        const transformedData = response.data.records.map(record => ({
+          id: record.$id.value,
+          first_name: record.studentName.value,
+          last_name: "",
+          email: record.studentEmail.value,
+          student_id: record.studentId.value,
+          photo: "", // Add default photo handling if needed
+          isBookmarked: false, // Add bookmark handling if needed
+          jlpt: JSON.stringify({ highest: "無し" }), // Add JLPT handling if needed
+          ielts: JSON.stringify({ highest: "無し" }), // Add IELTS handling if needed
+          semester: record.semester.value,
+          partner_university: record.partnerUniversity.value
+        }));
+
+        setRows(transformedData);
       } catch (error) {
         console.error("Error fetching students:", error);
-        // Handle error: Set error state, display error message, etc.
       } finally {
-        setLoading(false); // Stop loading indicator regardless of success or failure
+        setLoading(false);
       }
     };
 
     fetchUserData();
-  }, [tableProps.dataLink, tableProps.filter]);
+  }, [tableProps.filter]);
 
   useEffect(() => {
     if (updatedBookmark?.studentId) {
@@ -67,19 +76,11 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
       );
     }
   }, [updatedBookmark]);
+
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-    } else {
-      setSelected([]);
-    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -109,7 +110,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
             <TableRow>
               {tableProps.headers.map(
                 (header) =>
-                  (header.role == undefined || header.role == role) && (
+                  (header.role === undefined || header.role === role) && (
                     <TableCell
                       sx={{ borderBottom: "1px solid #aaa" }}
                       key={"header" + header.id}
@@ -123,11 +124,6 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                         onClick={() => handleRequestSort(header.id)}
                       >
                         {header.label}
-                        {orderBy === header.id ? (
-                          <Box component="span" sx={{ visuallyHidden: true }}>
-                            {order === "desc" ? "" : ""}
-                          </Box>
-                        ) : null}
                       </TableSortLabel>
                     </TableCell>
                   )
@@ -135,7 +131,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? ( // Show loading indicator if loading is true
+            {loading ? (
               <TableRow>
                 <TableCell colSpan={tableProps.headers.length} align="center">
                   <LinearProgress />
@@ -155,7 +151,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                   >
                     {tableProps.headers.map(
                       (header) =>
-                        (header.role == undefined || header.role == role) && (
+                        (header.role === undefined || header.role === role) && (
                           <TableCell
                             key={"data" + header.id}
                             align={header.numeric ? "right" : "left"}
@@ -170,7 +166,11 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 ? style.hoverEffect
                                 : style.default
                             }
-                            style={ header.type === "avatar" ? { minWidth: header.minWidth, padding: "4px" } : {minWidth: header.minWidth}}
+                            style={
+                              header.type === "avatar"
+                                ? { minWidth: header.minWidth, padding: "4px" }
+                                : { minWidth: header.minWidth }
+                            }
                           >
                             {header.type === "bookmark" ? (
                               <>
@@ -210,28 +210,17 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                             ) : header.type === "avatar" ? (
                               <UserAvatar
                                 photo={row.photo}
-                                name={row.first_name + " " + row.last_name}
+                                name={row.first_name}
                                 studentId={row.student_id}
-                              />
-                            ) : header.type === "status" ? (
-                              <Chip
-                                label={row[header.id] ? "○" : "×"}
-                                color={row[header.id] ? "primary" : "default"}
                               />
                             ) : header.type === "email" ? (
                               <a href={`mailto:${row[header.id]}`}>
                                 {row[header.id]}
                               </a>
                             ) : header.isJSON ? (
-                              JSON.parse(row[header.id])?.highest ? (
-                                JSON.parse(row[header.id])?.highest
-                              ) : (
-                                "無し"
-                              )
-                            ) : row[header.id] ? (
-                              row[header.id]
+                              JSON.parse(row[header.id])?.highest || "無し"
                             ) : (
-                              "無し"
+                              row[header.id] || "無し"
                             )}
                           </TableCell>
                         )
@@ -274,7 +263,7 @@ EnhancedTable.propTypes = {
         type: PropTypes.string,
       })
     ).isRequired,
-    filter: PropTypes.object.isRequired, // Assuming filter is an object
+    filter: PropTypes.object.isRequired,
   }).isRequired,
 };
 

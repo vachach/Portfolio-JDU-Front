@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
-import Table from "../../components/table/Table";
+import Table from "../../components/table/modified-table";
 import Filter from "../../components/filter/Filter";
 
 import axios from "../../utils/axiosUtils";
+import {useUser} from "../../contexts/UserContext.jsx";
 
 const Student = ({ OnlyBookmarked = false }) => {
   const [filterState, setFilterState] = useState({});
+  const {activeUser, updateUser, userId, role} = useUser();
   const [updatedBookmark, setUpdatedBookmark] = useState({
     studentId: null,
     timestamp: new Date().getTime(),
   });
-  const recruiterId = JSON.parse(sessionStorage.getItem("loginUser")).id;
   // Ensure filterProps have unique keys matching your database columns
   const filterProps = [
     {
@@ -44,21 +45,6 @@ const Student = ({ OnlyBookmarked = false }) => {
       minWidth: "160px",
     },
     {
-      key: "jdu_japanese_certification",
-      label: "JDU日本語認定試験",
-      type: "checkbox",
-      options: ["Q1", "Q2", "Q3", "Q4", "Q5"],
-      minWidth: "160px",
-    },
-    {
-      key: "partner_university_credits",
-      label: "単位数",
-      type: "radio",
-      options: ["20", "40", "60", "80", "100"],
-      unit: "単位内",
-      minWidth: "160px",
-    },
-    {
       key: "partner_university",
       label: "提携大学",
       type: "checkbox",
@@ -69,13 +55,6 @@ const Student = ({ OnlyBookmarked = false }) => {
         "大手前大学",
         "新潟大学",
       ],
-      minWidth: "160px",
-    },
-    {
-      key: "other_information",
-      label: "特技 (有無)",
-      type: "radio",
-      options: ["有り", "無し"],
       minWidth: "160px",
     },
   ];
@@ -94,7 +73,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     try {
       const response = await axios.post("/api/bookmarks/toggle", {
         studentId,
-        recruiterId,
+        userId,
       });
       setUpdatedBookmark({
         studentId: response.data.studentId,
@@ -105,6 +84,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     }
   };
 
+  // Updated headers to match the new data structure
   const headers = [
     {
       id: "bookmark",
@@ -145,15 +125,17 @@ const Student = ({ OnlyBookmarked = false }) => {
       numeric: true,
       disablePadding: false,
       label: "IELTS",
+      minWidth: "120px",
       isJSON: true,
     }
   ];
 
+  // Updated tableProps to use the new API endpoint
   const tableProps = {
     headers: headers,
-    dataLink: "/api/students",
+    dataLink: "https://9hrfxuh377.execute-api.ap-northeast-1.amazonaws.com/default/api/kintone",
     filter: filterState,
-    recruiterId: recruiterId,
+    recruiterId: userId,
     OnlyBookmarked: OnlyBookmarked,
   };
 

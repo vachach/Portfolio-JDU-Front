@@ -1,28 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "../../utils/axiosUtils";
-import {
-  Container,
-  TextField,
-  Button,
-  Avatar,
-  Grid,
-  Box,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
-import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
-import { useForm, Controller } from "react-hook-form";
-import { UserContext } from "../../contexts/UserContext";
-import jduLogo from "../../assets/logo.png";
+import {Avatar, Box, Button, Container, Grid, IconButton, InputAdornment, TextField,} from "@mui/material";
+import {PhotoCamera, Visibility, VisibilityOff} from "@mui/icons-material";
+import {Controller, useForm} from "react-hook-form";
+import {useUser} from "../../contexts/UserContext";
 import SettingStyle from "./Setting.module.css";
-import { useAlert } from "../../contexts/AlertContext";
+import {useAlert} from "../../contexts/AlertContext";
 
 const Setting = () => {
   const showAlert = useAlert();
-
-  const { activeUser, updateUser } = useContext(UserContext);
-
-  const [role, setRole] = useState(null);
+  const {role, userId, activeUser, updateUser} = useUser();
   const [user, setUser] = useState({});
   const [avatarImage, setAvatarImage] = useState(null);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -34,11 +21,9 @@ const Setting = () => {
   const {
     control,
     handleSubmit,
-    watch,
-    setValue,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: {errors},
     reset,
   } = useForm({
     defaultValues: {
@@ -58,26 +43,23 @@ const Setting = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userRole = sessionStorage.getItem("role");
-      await setRole(userRole);
       try {
-        const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
         let response;
-        switch (userRole) {
+        switch (role) {
           case "Admin":
-            response = await axios.get(`/api/admin/${id}`);
+            response = await axios.get(`/api/admin/${userId}`);
             break;
           case "Student":
-            response = await axios.get(`/api/students/${id}`);
+            response = await axios.get(`/api/students/${userId}`);
             break;
           case "Staff":
-            response = await axios.get(`/api/staff/${id}`);
+            response = await axios.get(`/api/staff/${userId}`);
             break;
           case "Recruiter":
-            response = await axios.get(`/api/recruiters/${id}`);
+            response = await axios.get(`/api/recruiters/${userId}`);
             break;
           default:
-            throw new Error("Unknown role");
+            console.error("Unknown role");
         }
         setUser(response.data);
         setAvatarImage(response.data.photo);
@@ -203,7 +185,7 @@ const Setting = () => {
           updatedData = await axios.put(`/api/recruiters/${id}`, updateData);
           break;
         default:
-          throw new Error("Unknown role");
+          console.error("Unknown role");
       }
       await setUser(updatedData.data);
       let tempUser = activeUser;
@@ -259,7 +241,7 @@ const Setting = () => {
             <Avatar
               alt="User Avatar"
               src={avatarImage}
-              sx={{ width: 100, height: 100 }}
+              sx={{width: 100, height: 100}}
             >
               {role === "Recruiter" && "会社ロゴ"}
             </Avatar>
@@ -277,7 +259,7 @@ const Setting = () => {
                     backgroundColor: "white",
                   }}
                 >
-                  <PhotoCamera />
+                  <PhotoCamera/>
                 </IconButton>
               )}
             </label>
@@ -285,7 +267,7 @@ const Setting = () => {
               accept="image/*"
               id="avatar-upload"
               type="file"
-              style={{ display: "none" }}
+              style={{display: "none"}}
               onChange={handleAvatarChange}
             />
           </Box>
@@ -305,7 +287,7 @@ const Setting = () => {
               variant="outlined"
               color="primary"
               className={SettingStyle["edit-button"]}
-              style={{ minWidth: "124px" }}
+              style={{minWidth: "124px"}}
               onClick={handleEditClick}
             >
               編集
@@ -316,7 +298,7 @@ const Setting = () => {
                 variant="outlined"
                 color="primary"
                 className={SettingStyle["cancel-button"]}
-                style={{ minWidth: "124px" }}
+                style={{minWidth: "124px"}}
                 onClick={handleCancel}
               >
                 キャンセル
@@ -326,7 +308,7 @@ const Setting = () => {
                 color="primary"
                 className={SettingStyle["save-button"]}
                 onClick={handleSubmit(onSubmit)}
-                style={{ minWidth: "76px" }}
+                style={{minWidth: "76px"}}
               >
                 保存
               </Button>
@@ -347,7 +329,7 @@ const Setting = () => {
             <Controller
               name="first_name"
               control={control}
-              render={({ field }) => (
+              render={({field}) => (
                 <TextField
                   label="名"
                   variant="outlined"
@@ -362,7 +344,7 @@ const Setting = () => {
             <Controller
               name="last_name"
               control={control}
-              render={({ field }) => (
+              render={({field}) => (
                 <TextField
                   label="姓"
                   variant="outlined"
@@ -377,7 +359,7 @@ const Setting = () => {
             <Controller
               name="phone"
               control={control}
-              render={({ field }) => (
+              render={({field}) => (
                 <TextField
                   label="電話番号"
                   variant="outlined"
@@ -392,7 +374,7 @@ const Setting = () => {
             <Controller
               name="email"
               control={control}
-              render={({ field }) => (
+              render={({field}) => (
                 <TextField
                   autoComplete="false"
                   label="メール"
@@ -412,7 +394,7 @@ const Setting = () => {
               <Controller
                 name="currentPassword"
                 control={control}
-                render={({ field }) => (
+                render={({field}) => (
                   <TextField
                     label="現在のパスワード"
                     variant="outlined"
@@ -432,9 +414,9 @@ const Setting = () => {
                             edge="end"
                           >
                             {showCurrentPassword ? (
-                              <VisibilityOff />
+                              <VisibilityOff/>
                             ) : (
-                              <Visibility />
+                              <Visibility/>
                             )}
                           </IconButton>
                         </InputAdornment>
@@ -448,7 +430,7 @@ const Setting = () => {
               <Controller
                 name="password"
                 control={control}
-                render={({ field }) => (
+                render={({field}) => (
                   <TextField
                     label="新しいパスワード"
                     variant="outlined"
@@ -468,9 +450,9 @@ const Setting = () => {
                             edge="end"
                           >
                             {showNewPassword ? (
-                              <VisibilityOff />
+                              <VisibilityOff/>
                             ) : (
-                              <Visibility />
+                              <Visibility/>
                             )}
                           </IconButton>
                         </InputAdornment>
@@ -484,7 +466,7 @@ const Setting = () => {
               <Controller
                 name="confirmPassword"
                 control={control}
-                render={({ field }) => (
+                render={({field}) => (
                   <TextField
                     label="パスワードを認証する"
                     variant="outlined"
@@ -504,9 +486,9 @@ const Setting = () => {
                             edge="end"
                           >
                             {showConfirmPassword ? (
-                              <VisibilityOff />
+                              <VisibilityOff/>
                             ) : (
-                              <Visibility />
+                              <Visibility/>
                             )}
                           </IconButton>
                         </InputAdornment>
@@ -526,7 +508,7 @@ const Setting = () => {
                 <Controller
                   name="contactEmail"
                   control={control}
-                  render={({ field }) => (
+                  render={({field}) => (
                     <TextField
                       label="メール"
                       variant="outlined"
@@ -541,7 +523,7 @@ const Setting = () => {
                 <Controller
                   name="contactPhone"
                   control={control}
-                  render={({ field }) => (
+                  render={({field}) => (
                     <TextField
                       label="電話番号"
                       variant="outlined"
@@ -556,7 +538,7 @@ const Setting = () => {
                 <Controller
                   name="workingHours"
                   control={control}
-                  render={({ field }) => (
+                  render={({field}) => (
                     <TextField
                       label="労働時間"
                       variant="outlined"
@@ -571,7 +553,7 @@ const Setting = () => {
                 <Controller
                   name="location"
                   control={control}
-                  render={({ field }) => (
+                  render={({field}) => (
                     <TextField
                       label="位置"
                       variant="outlined"

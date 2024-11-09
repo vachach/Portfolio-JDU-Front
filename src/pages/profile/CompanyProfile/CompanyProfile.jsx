@@ -17,16 +17,17 @@ import styles from "./CompanyProfile.module.css";
 
 import Gallery from "../../../components/Gallery";
 import TextField from "../../../components/TextField/TextField";
+import {useUser} from "../../../contexts/UserContext.jsx";
 
 const CompanyProfile = ({ userId = 0 }) => {
-  const role = sessionStorage.getItem("role");
+  const {isAuthenticated, role} = useUser();
   const navigate = useNavigate();
   const location = useLocation();
 
   const { recruiterId } = location.state || {};
 
   let id;
-  if (userId != 0) {
+  if (userId !== 0) {
     id = userId;
   } else {
     id = recruiterId;
@@ -176,7 +177,7 @@ const CompanyProfile = ({ userId = 0 }) => {
         </Box>
         <Box id="saveButton">
           <Box my={2} className={styles.buttonsContainer}>
-            {role == "Recruiter" && (
+            {role === "Recruiter" && (
               <>
                 {editMode ? (
                   <>

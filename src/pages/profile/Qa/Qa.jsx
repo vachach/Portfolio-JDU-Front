@@ -14,16 +14,17 @@ import {
 } from "@mui/icons-material";
 import axios from "../../../utils/axiosUtils";
 import { Box, Tabs, Tab, Button, Snackbar, Alert } from "@mui/material";
+import {useUser} from "../../../contexts/UserContext.jsx";
 
 const QA = () => {
-  const role = sessionStorage.getItem("role");
+  const {isAuthenticated, role} = useUser();
   const labels = ["学生成績", "専門知識", "個性", "実務経験", "キャリア目標"];
   let id;
   const { studentId } = useParams();
   const location = useLocation();
   const { userId } = location.state || {};
 
-  if (userId != 0 && userId) {
+  if (userId !== 0 && userId) {
     id = userId;
   } else {
     id = studentId;
@@ -134,7 +135,7 @@ const QA = () => {
 
   const portalContent = (
     <Box my={2} className={styles.buttonsContainer}>
-      {role == "Student" && (
+      {role === "Student" && (
         <>
           {editMode ? (
             <>
@@ -218,7 +219,7 @@ const QA = () => {
         {!editMode &&
           Object.entries(getCategoryData(subTabIndex)).map(
             ([key, { question, answer }]) =>
-              !(question.split("]")[0] == "[任意" && !answer) && (
+              !(question.split("]")[0] === "[任意" && !answer) && (
                 <QAAccordion
                   key={key}
                   question={question.split("]")[1]}

@@ -11,10 +11,11 @@ import Deliverables from "../../../components/Deliverables/Deliverables";
 import { useAlert } from "../../../contexts/AlertContext";
 
 import styles from "./Top.module.css";
+import {useUser} from "../../../contexts/UserContext.jsx";
 
 const Top = () => {
   let id;
-  const role = sessionStorage.getItem("role");
+  const {isAuthenticated, role} = useUser();
   const { studentId } = useParams();
   const location = useLocation();
   const { userId } = location.state || {};
