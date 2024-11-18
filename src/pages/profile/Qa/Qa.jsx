@@ -29,6 +29,7 @@ const QA = () => {
   } else {
     id = studentId;
   }
+  
 
   const [studentQA, setStudentQA] = useState(null);
   const [editData, setEditData] = useState({});

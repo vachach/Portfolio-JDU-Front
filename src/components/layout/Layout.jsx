@@ -28,11 +28,11 @@ const navItems = [
     section: "GENERAL",
     items: [
       {to: "/", icon: <HomeIcon/>, label: "Home", roles: ["Admin", "Staff", "Recruiter"]},
-      {to: "/companyprofile", icon: <ProfileIcon/>, label: "プロファイル", roles: ["Recruiter"]},
+      {to: "/companyprofile", icon: <ProfileIcon/>, label: "プロフィール", roles: ["Recruiter"]},
       {to: "/student", icon: <StudentIcon/>, label: "学生検索", roles: ["Admin", "Staff", "Recruiter"]},
       {to: "/staff", icon: <UserPlusIcon/>, label: "職員", roles: ["Admin"]},
-      {to: "/profile", icon: <ProfileIcon/>, label: "プロファイル", roles: ["Student"]},
-      {to: "/recruiter", icon: <UserPlusIcon/>, label: "リクレーター", roles: ["Admin", "Staff", "Student"]},
+      {to: "/profile", icon: <ProfileIcon/>, label: "プロフィール", roles: ["Student"]},
+      {to: "/recruiter", icon: <UserPlusIcon/>, label: "リクルーター", roles: ["Admin", "Staff", "Student"]},
       {to: "/bookmarked", icon: <BookmarkIcon/>, label: "気になる", roles: ["Recruiter"]},
     ],
   }, {

@@ -171,7 +171,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
           <FormControl fullWidth>
             <TextField
               className={style.textfield}
-              label="サーチ"
+              label="氏名の検索"
               value={localFilterState.search || ""}
               onChange={(e) => handleChange("search", e.target.value)}
             />
@@ -180,7 +180,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
       </Grid>
       <Grid item xs={12} style={{ position: "relative" }}>
         <div className={style.clear} onClick={handleClear}>
-          取り戻す
+          戻る
         </div>
         <div className={style.filterButtonContainer}>
           {fields.length > 1 && (
